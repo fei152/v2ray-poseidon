@@ -40,6 +40,11 @@ func (c *UserConfig) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	// set default value
+	if cfg.SecurityStr == "" {
+		cfg.SecurityStr = "AUTO"
+	}
+
 	cfg.securityConfig = &protocol.SecurityConfig{
 		Type: protocol.SecurityType(protocol.SecurityType_value[strings.ToUpper(cfg.SecurityStr)]),
 	}
@@ -54,6 +59,7 @@ type myPluginConfig struct {
 	TrafficRate float64      `json:"trafficRate"`
 	MySQL       *MySQLConfig `json:"mysql"`
 	UserConfig  *UserConfig  `json:"user"`
+	GRPCAddr    string       `json:"gRPCAddr"`
 }
 
 type Config struct {
