@@ -16,6 +16,7 @@ type HandlerServiceClient struct {
 func NewHandlerServiceClient(client *grpc.ClientConn, inboundTag string) *HandlerServiceClient {
 	return &HandlerServiceClient{
 		HandlerServiceClient: command.NewHandlerServiceClient(client),
+		inboundTag: inboundTag,
 	}
 }
 
