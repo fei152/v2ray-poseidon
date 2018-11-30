@@ -1,6 +1,7 @@
 package v2ray_ssrpanel_plugin
 
 import (
+	"context"
 	"google.golang.org/grpc"
 	"time"
 )
@@ -15,6 +16,11 @@ func connectGRPC(address string, timeoutDuration time.Duration) (conn *grpc.Clie
 			return
 		case <-tick:
 			conn, err = grpc.Dial(address, grpc.WithInsecure())
+			if err != nil {
+				continue
+			}
+
+			err = conn.Invoke(context.Background(), "test connection", nil, nil)
 			if err == nil {
 				return
 			}

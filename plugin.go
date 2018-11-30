@@ -2,6 +2,7 @@ package v2ray_ssrpanel_plugin
 
 import (
 	"fmt"
+	"google.golang.org/grpc/status"
 	"os"
 	"time"
 	"v2ray.com/core/common/errors"
@@ -32,11 +33,14 @@ func run() error {
 
 	go func() {
 		gRPCAddr := globalCfg.myPluginConfig.GRPCAddr
-		gRPCConn, err := connectGRPC(gRPCAddr, 45*time.Second)
+		gRPCConn, err := connectGRPC(gRPCAddr, 10*time.Second)
 		if err != nil {
-			fatal(fmt.Sprintf("connect to gRPC server \"%s\"", gRPCAddr), err)
+			if s, ok := status.FromError(err); ok {
+				err = errors.New(s.Message())
+			}
+			fatal(fmt.Sprintf("connect to gRPC server \"%s\" err: ", gRPCAddr), err)
 		}
-		newError(fmt.Sprintf("Connected gRPC server \"%s\"", gRPCAddr)).AtWarning().WriteToLog()
+		newError(fmt.Sprintf("Connected gRPC server \"%s\" ", gRPCAddr)).AtWarning().WriteToLog()
 
 		p := NewPanel(gRPCConn, db, globalCfg)
 		p.Start()

@@ -54,7 +54,7 @@ func (c *UserConfig) UnmarshalJSON(data []byte) error {
 
 type myPluginConfig struct {
 	InboundTag  string       `json:"inboundTag"`
-	NodeID      int          `json:"nodeId"`
+	NodeID      uint          `json:"nodeId"`
 	CheckRate   int          `json:"checkRate"`
 	TrafficRate float64      `json:"trafficRate"`
 	MySQL       *MySQLConfig `json:"mysql"`
