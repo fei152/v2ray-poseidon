@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
+	"strings"
 	statsservice "v2ray.com/core/app/stats/command"
 )
 
@@ -17,15 +19,15 @@ func NewStatsServiceClient(client *grpc.ClientConn) *StatsServiceClient {
 	}
 }
 
-func (s *StatsServiceClient) getUserUplink(email string) (*statsservice.Stat, error) {
+func (s *StatsServiceClient) getUserUplink(email string) (uint64, error) {
 	return s.getUserTraffic(fmt.Sprintf("user>>>%s>>>traffic>>>uplink", email), true)
 }
 
-func (s *StatsServiceClient) getUserDownlink(email string) (*statsservice.Stat, error) {
+func (s *StatsServiceClient) getUserDownlink(email string) (uint64, error) {
 	return s.getUserTraffic(fmt.Sprintf("user>>>%s>>>traffic>>>downlink", email), true)
 }
 
-func (s *StatsServiceClient) getUserTraffic(name string, reset bool) (*statsservice.Stat, error) {
+func (s *StatsServiceClient) getUserTraffic(name string, reset bool) (uint64, error) {
 	req := &statsservice.GetStatsRequest{
 		Name:   name,
 		Reset_: reset,
@@ -33,8 +35,12 @@ func (s *StatsServiceClient) getUserTraffic(name string, reset bool) (*statsserv
 
 	res, err := s.GetStats(context.Background(), req)
 	if err != nil {
-		return nil, err
+		if status, ok := status.FromError(err); ok && strings.HasSuffix(status.Message(), fmt.Sprintf("%s not found.", name)) {
+			return 0, nil
+		}
+
+		return 0, err
 	}
 
-	return res.Stat, nil
+	return uint64(res.Stat.Value), nil
 }

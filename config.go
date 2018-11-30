@@ -27,6 +27,7 @@ var (
 )
 
 type UserConfig struct {
+	InboundTag     string `json:"inboundTag"`
 	Level          uint32 `json:"level"`
 	AlterID        uint32 `json:"alterId"`
 	SecurityStr    string `json:"securityConfig"`
@@ -53,8 +54,7 @@ func (c *UserConfig) UnmarshalJSON(data []byte) error {
 }
 
 type myPluginConfig struct {
-	InboundTag  string       `json:"inboundTag"`
-	NodeID      uint          `json:"nodeId"`
+	NodeID      uint         `json:"nodeId"`
 	CheckRate   int          `json:"checkRate"`
 	TrafficRate float64      `json:"trafficRate"`
 	MySQL       *MySQLConfig `json:"mysql"`
