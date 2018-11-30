@@ -13,12 +13,14 @@ type Panel struct {
 	handlerServiceClient *HandlerServiceClient
 	db                   *DB
 	userModels           []UserModel
+	globalConfig         *Config
 }
 
-func NewPanel(gRPCConn *grpc.ClientConn, db *DB) *Panel {
+func NewPanel(gRPCConn *grpc.ClientConn, db *DB, globalConfig *Config) *Panel {
 	return &Panel{
 		db:                   db,
-		handlerServiceClient: NewHandlerServiceClient(gRPCConn, "proxy"),
+		handlerServiceClient: NewHandlerServiceClient(gRPCConn, globalConfig.myPluginConfig.InboundTag),
+		globalConfig:         globalConfig,
 	}
 }
 
@@ -80,18 +82,14 @@ func (p *Panel) do() error {
 }
 
 func (p *Panel) convertUser(userModel UserModel) *protocol.User {
+	userCfg := p.globalConfig.myPluginConfig.UserConfig
 	return &protocol.User{
-		// todo
-		Level: 0,
+		Level: userCfg.Level,
 		Email: userModel.Email,
 		Account: serial.ToTypedMessage(&vmess.Account{
-			Id: userModel.VmessID,
-			// todo
-			AlterId: 1,
-			SecuritySettings: &protocol.SecurityConfig{
-				// todo
-				Type: protocol.SecurityType_AUTO,
-			},
+			Id:               userModel.VmessID,
+			AlterId:          userCfg.AlterID,
+			SecuritySettings: userCfg.securityConfig,
 		}),
 	}
 }

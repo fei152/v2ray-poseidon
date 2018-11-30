@@ -7,8 +7,10 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"v2ray.com/core/common/errors"
 	"v2ray.com/core/common/platform"
+	"v2ray.com/core/common/protocol"
 	"v2ray.com/core/main/confloader"
 	json_reader "v2ray.com/ext/encoding/json"
 	"v2ray.com/ext/tools/conf"
@@ -24,12 +26,34 @@ var (
 	_          = commandLine.Bool("plugin", false, "True to load plugins.")
 )
 
+type UserConfig struct {
+	Level          uint32 `json:"level"`
+	AlterID        uint32 `json:"alterId"`
+	SecurityStr    string `json:"securityConfig"`
+	securityConfig *protocol.SecurityConfig
+}
+
+func (c *UserConfig) UnmarshalJSON(data []byte) error {
+	type config UserConfig
+	var cfg config
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return err
+	}
+
+	cfg.securityConfig = &protocol.SecurityConfig{
+		Type: protocol.SecurityType(protocol.SecurityType_value[strings.ToUpper(cfg.SecurityStr)]),
+	}
+	*c = UserConfig(cfg)
+	return nil
+}
+
 type myPluginConfig struct {
 	InboundTag  string       `json:"inboundTag"`
 	NodeID      int          `json:"nodeId"`
 	CheckRate   int          `json:"checkRate"`
 	TrafficRate float64      `json:"trafficRate"`
 	MySQL       *MySQLConfig `json:"mysql"`
+	UserConfig  *UserConfig  `json:"user"`
 }
 
 type Config struct {
@@ -117,6 +141,6 @@ func fileExists(file string) bool {
 }
 
 func logConfig(cfg *Config) {
-	configContent, _ := json.Marshal(cfg)
+	configContent, _ := json.MarshalIndent(cfg, "", "  ")
 	newError("got config: ", string(configContent)).AtInfo().WriteToLog()
 }

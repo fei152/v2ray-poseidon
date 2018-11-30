@@ -19,12 +19,12 @@ func run() error {
 		return testConfig()
 	}
 
-	cfg, err := getConfig()
+	globalCfg, err := getConfig()
 	if err != nil {
 		return err
 	}
 
-	db, err := NewMySQLConn(cfg.myPluginConfig.MySQL)
+	db, err := NewMySQLConn(globalCfg.myPluginConfig.MySQL)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func run() error {
 			fatal("connect to gRPC server: ", err)
 		}
 
-		p := NewPanel(gRPCConn, db)
+		p := NewPanel(gRPCConn, db, globalCfg)
 		p.Start()
 	}()
 
