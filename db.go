@@ -7,6 +7,7 @@ import (
 type UserModel struct {
 	ID      int
 	VmessID string
+	Email   string `gorm:"column:username"`
 }
 
 func (UserModel) TableName() string {
@@ -19,6 +20,6 @@ type DB struct {
 
 func (db *DB) GetAllUsers() ([]UserModel, error) {
 	users := make([]UserModel, 0)
-	db.Select("id, vmess_id").Where("enable = 1 AND u + d < transfer_enable").Find(&users)
+	db.Select("id, vmess_id, username").Where("enable = 1 AND u + d < transfer_enable").Find(&users)
 	return users, nil
 }

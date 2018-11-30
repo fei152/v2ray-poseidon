@@ -23,12 +23,22 @@ func run() error {
 	if err != nil {
 		return err
 	}
+
 	db, err := NewMySQLConn(cfg.myPluginConfig.MySQL)
 	if err != nil {
 		return err
 	}
 
-	db.GetAllUsers()
+	go func() {
+		grpcAddr := "localhost:10086"
+		gRPCConn, err := connectGRPC(grpcAddr, 45*time.Second)
+		if err != nil {
+			fatal("connect to gRPC server: ", err)
+		}
+
+		p := NewPanel(gRPCConn, db)
+		p.Start()
+	}()
 
 	return nil
 }
