@@ -12,4 +12,3 @@ func GetPluginMetadata() core.PluginMetadata {
 		Name: "SSR Panel",
 	}
 }
-

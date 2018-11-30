@@ -8,10 +8,10 @@ import (
 	"os"
 	"path/filepath"
 	"v2ray.com/core/common/errors"
-
 	"v2ray.com/core/common/platform"
 	"v2ray.com/core/main/confloader"
 	json_reader "v2ray.com/ext/encoding/json"
+	"v2ray.com/ext/tools/conf"
 )
 
 var (
@@ -24,18 +24,20 @@ var (
 	_          = commandLine.Bool("plugin", false, "True to load plugins.")
 )
 
+type myPluginConfig struct {
+	InboundTag  string       `json:"inboundTag"`
+	NodeID      int          `json:"nodeId"`
+	CheckRate   int          `json:"checkRate"`
+	TrafficRate float64      `json:"trafficRate"`
+	MySQL       *MySQLConfig `json:"mysql"`
+}
+
 type Config struct {
-	InboundTag  string  `json:"inboundTag"`
-	NodeID      int     `json:"nodeId"`
-	CheckRate   int     `json:"checkRate"`
-	TrafficRate float64 `json:"trafficRate"`
-	MySQL       struct {
-		Host     string `json:"host"`
-		Port     int    `json:"port"`
-		User     string `json:"user"`
-		Password string `json:"password"`
-		DBName   string `json:"dbname"`
-	} `json:"mysql"`
+	*conf.Config
+	Other struct {
+		Plugins map[string]json.RawMessage `json:"plugins"`
+	} `json:"other"`
+	myPluginConfig *myPluginConfig
 }
 
 func testConfig() error {
@@ -56,25 +58,29 @@ func getConfig() (*Config, error) {
 	}
 	defer configInput.Close()
 
-	plugins := &struct {
-		Other struct {
-			Plugins map[string]json.RawMessage `json:"plugins"`
-		} `json:"other"`
-	}{}
-
-	if err = decodeCommentJSON(configInput, plugins); err != nil {
+	cfg := &Config{}
+	if err = decodeCommentJSON(configInput, cfg); err != nil {
 		return nil, err
 	}
 
-	rawCfg, ok := plugins.Other.Plugins["ssrpanel"]
-	if !ok {
-		return nil, errors.New("please add SSR Panel config")
+	myCfg := &myPluginConfig{}
+	if err = json.Unmarshal(cfg.Other.Plugins["ssrpanel"], myCfg); err != nil {
+		return nil, err
+	}
+	cfg.myPluginConfig = myCfg
+
+	if err = checkConfig(cfg); err != nil {
+		return nil, err
 	}
 
-	cfg := &Config{}
-	err = json.Unmarshal(rawCfg, cfg)
-
 	return cfg, err
+}
+
+func checkConfig(cfg *Config) error {
+	if cfg.myPluginConfig == nil {
+		return errors.New("please add SSR Panel config")
+	}
+	return nil
 }
 
 func getConfigFilePath() string {

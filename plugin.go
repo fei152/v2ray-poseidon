@@ -3,7 +3,6 @@ package v2ray_ssrpanel_plugin
 import (
 	"os"
 	"time"
-
 	"v2ray.com/core/common/errors"
 )
 
@@ -24,7 +23,12 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	_ = cfg
+	db, err := NewMySQLConn(cfg.myPluginConfig.MySQL)
+	if err != nil {
+		return err
+	}
+
+	db.GetAllUsers()
 
 	return nil
 }
@@ -37,6 +41,6 @@ func newError(values ...interface{}) *errors.Error {
 func fatal(values ...interface{}) {
 	newError(values...).AtError().WriteToLog()
 	// Wait log
-	time.Sleep(5*time.Second)
+	time.Sleep(1 * time.Second)
 	os.Exit(-2)
 }
