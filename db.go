@@ -31,6 +31,39 @@ func (l *UserTrafficLog) BeforeCreate(scope *gorm.Scope) error {
 	return nil
 }
 
+type NodeOnlineLog struct {
+	ID         uint `gorm:"primary_key"`
+	NodeID     uint
+	OnlineUser int
+	LogTime    int64
+}
+
+func (*NodeOnlineLog) TableName() string {
+	return "ss_node_online_log"
+}
+
+func (l *NodeOnlineLog) BeforeCreate(scope *gorm.Scope) error {
+	l.LogTime = time.Now().Unix()
+	return nil
+}
+
+type NodeInfo struct {
+	ID      uint `gorm:"primary_key"`
+	NodeID  uint
+	Uptime  time.Duration
+	Load    string
+	LogTime int64
+}
+
+func (*NodeInfo) TableName() string {
+	return "ss_node_info"
+}
+
+func (l *NodeInfo) BeforeCreate(scope *gorm.Scope) error {
+	l.LogTime = time.Now().Unix()
+	return nil
+}
+
 type DB struct {
 	DB *gorm.DB
 }

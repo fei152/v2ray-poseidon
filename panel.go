@@ -3,8 +3,11 @@ package v2ray_ssrpanel_plugin
 import (
 	"code.cloudfoundry.org/bytefmt"
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"github.com/robfig/cron"
+	"github.com/shirou/gopsutil/load"
 	"google.golang.org/grpc"
+	"time"
 	"v2ray.com/core/common/protocol"
 	"v2ray.com/core/common/serial"
 	"v2ray.com/core/proxy/vmess"
@@ -16,6 +19,7 @@ type Panel struct {
 	db                   *DB
 	userModels           []UserModel
 	globalConfig         *Config
+	startAt              time.Time
 }
 
 func NewPanel(gRPCConn *grpc.ClientConn, db *DB, globalConfig *Config) *Panel {
@@ -24,6 +28,7 @@ func NewPanel(gRPCConn *grpc.ClientConn, db *DB, globalConfig *Config) *Panel {
 		handlerServiceClient: NewHandlerServiceClient(gRPCConn, globalConfig.myPluginConfig.UserConfig.InboundTag),
 		statsServiceClient:   NewStatsServiceClient(gRPCConn),
 		globalConfig:         globalConfig,
+		startAt:              time.Now(),
 	}
 }
 
@@ -41,25 +46,62 @@ func (p *Panel) Start() {
 	c.Run()
 }
 
-func (p *Panel) do() (err error) {
-	var addedUserCount, deletedUserCount int
+func (p *Panel) do() error {
+	var addedUserCount, deletedUserCount, onlineUsers int
 	var uplinkTraffic, downlinkTraffic uint64
 	newError("start jobs").AtDebug().WriteToLog()
 	defer func() {
-		newError(fmt.Sprintf("jobs info: addded %d users, deleteted %d users, downlink traffic %s, uplink traffic %s",
-			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic))).AtInfo().WriteToLog()
+		newError(fmt.Sprintf("+ %d users, - %d users, ↓ %s, ↑ %s, online %d",
+			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic), onlineUsers)).AtWarning().WriteToLog()
 	}()
 
-	uplinkTraffic, downlinkTraffic, err = p.getTraffic()
+	p.db.DB.Create(&NodeInfo{
+		NodeID: p.globalConfig.myPluginConfig.NodeID,
+		Uptime: time.Now().Sub(p.startAt) / time.Second,
+		Load:   getSystemLoad(),
+	})
+
+	userTrafficLogs, err := p.getTraffic()
 	if err != nil {
-		return
+		return err
+	}
+	onlineUsers = len(userTrafficLogs)
+
+	var uVals, dVals string
+	var userIDs []uint
+
+	for _, log := range userTrafficLogs {
+		p.db.DB.Create(&log)
+		uplinkTraffic += log.Uplink
+		downlinkTraffic += log.Downlink
+
+		userIDs = append(userIDs, log.UserID)
+		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, log.Uplink)
+		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, log.Downlink)
+	}
+
+	if onlineUsers > 0 {
+		p.db.DB.Create(&NodeOnlineLog{
+			NodeID:     p.globalConfig.myPluginConfig.NodeID,
+			OnlineUser: onlineUsers,
+		})
+	}
+
+	if uVals != "" && dVals != "" {
+		p.db.DB.Table("user").
+			Where("id in (?)", userIDs).
+			Updates(map[string]interface{}{
+				"u": gorm.Expr(fmt.Sprintf("CASE id %s END", uVals)),
+				"d": gorm.Expr(fmt.Sprintf("CASE id %s END", dVals)),
+				"t": time.Now().Unix(),
+			})
 	}
 
 	addedUserCount, deletedUserCount, err = p.syncUser()
-	return
+	return nil
 }
 
-func (p *Panel) getTraffic() (downlinkTotal uint64, uplinkTotal uint64, err error) {
+func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 	var downlink, uplink uint64
 	for _, user := range p.userModels {
 		downlink, err = p.statsServiceClient.getUserDownlink(user.Email)
@@ -73,20 +115,15 @@ func (p *Panel) getTraffic() (downlinkTotal uint64, uplinkTotal uint64, err erro
 		}
 
 		if uplink+downlink > 0 {
-			log := UserTrafficLog{
+			userTrafficLogs = append(userTrafficLogs, UserTrafficLog{
 				UserID:   user.ID,
 				Uplink:   uplink,
 				Downlink: downlink,
 				NodeID:   p.globalConfig.myPluginConfig.NodeID,
 				Rate:     p.globalConfig.myPluginConfig.TrafficRate,
 				Traffic:  bytefmt.ByteSize(uplink + downlink),
-			}
-
-			p.db.DB.Create(&log)
+			})
 		}
-
-		downlinkTotal += downlink
-		uplinkTotal += uplink
 	}
 
 	return
@@ -165,4 +202,13 @@ func findUserModelIndex(u *UserModel, userModels []UserModel) int {
 
 func inUserModels(u *UserModel, userModels []UserModel) bool {
 	return findUserModelIndex(u, userModels) != -1
+}
+
+func getSystemLoad() string {
+	stat, err := load.Avg()
+	if err != nil {
+		return "0.00 0.00 0.00"
+	}
+
+	return fmt.Sprintf("%.2f %.2f %.2f", stat.Load1, stat.Load5, stat.Load15)
 }
