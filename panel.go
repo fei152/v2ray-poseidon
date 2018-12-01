@@ -97,7 +97,6 @@ func (p *Panel) do() error {
 			})
 	}
 
-
 	addedUserCount, deletedUserCount, err = p.syncUser()
 	return nil
 }
