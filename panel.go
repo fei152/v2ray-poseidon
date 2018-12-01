@@ -52,7 +52,7 @@ func (p *Panel) do() error {
 	newError("start jobs").AtDebug().WriteToLog()
 	defer func() {
 		newError(fmt.Sprintf("+ %d users, - %d users, ↓ %s, ↑ %s, online %d",
-			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic), onlineUsers)).AtInfo().WriteToLog()
+			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic), onlineUsers)).AtWarning().WriteToLog()
 	}()
 
 	p.db.DB.Create(&NodeInfo{
