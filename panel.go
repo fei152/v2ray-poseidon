@@ -14,20 +14,20 @@ import (
 )
 
 type Panel struct {
+	*Config
 	handlerServiceClient *HandlerServiceClient
 	statsServiceClient   *StatsServiceClient
 	db                   *DB
 	userModels           []UserModel
-	globalConfig         *Config
 	startAt              time.Time
 }
 
-func NewPanel(gRPCConn *grpc.ClientConn, db *DB, globalConfig *Config) *Panel {
+func NewPanel(gRPCConn *grpc.ClientConn, db *DB, cfg *Config) *Panel {
 	return &Panel{
+		Config:               cfg,
 		db:                   db,
-		handlerServiceClient: NewHandlerServiceClient(gRPCConn, globalConfig.myPluginConfig.UserConfig.InboundTag),
+		handlerServiceClient: NewHandlerServiceClient(gRPCConn, cfg.UserConfig.InboundTag),
 		statsServiceClient:   NewStatsServiceClient(gRPCConn),
-		globalConfig:         globalConfig,
 		startAt:              time.Now(),
 	}
 }
@@ -41,7 +41,7 @@ func (p *Panel) Start() {
 	doFunc()
 
 	c := cron.New()
-	c.AddFunc(fmt.Sprintf("@every %ds", p.globalConfig.myPluginConfig.CheckRate), doFunc)
+	c.AddFunc(fmt.Sprintf("@every %ds", p.CheckRate), doFunc)
 	c.Start()
 	c.Run()
 }
@@ -56,7 +56,7 @@ func (p *Panel) do() error {
 	}()
 
 	p.db.DB.Create(&NodeInfo{
-		NodeID: p.globalConfig.myPluginConfig.NodeID,
+		NodeID: p.NodeID,
 		Uptime: time.Now().Sub(p.startAt) / time.Second,
 		Load:   getSystemLoad(),
 	})
@@ -82,7 +82,7 @@ func (p *Panel) do() error {
 
 	if onlineUsers > 0 {
 		p.db.DB.Create(&NodeOnlineLog{
-			NodeID:     p.globalConfig.myPluginConfig.NodeID,
+			NodeID:     p.NodeID,
 			OnlineUser: onlineUsers,
 		})
 	}
@@ -119,8 +119,8 @@ func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 				UserID:   user.ID,
 				Uplink:   uplink,
 				Downlink: downlink,
-				NodeID:   p.globalConfig.myPluginConfig.NodeID,
-				Rate:     p.globalConfig.myPluginConfig.TrafficRate,
+				NodeID:   p.NodeID,
+				Rate:     p.TrafficRate,
 				Traffic:  bytefmt.ByteSize(uplink + downlink),
 			})
 		}
@@ -179,7 +179,7 @@ func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
 }
 
 func (p *Panel) convertUser(userModel UserModel) *protocol.User {
-	userCfg := p.globalConfig.myPluginConfig.UserConfig
+	userCfg := p.UserConfig
 	return &protocol.User{
 		Level: userCfg.Level,
 		Email: userModel.Email,

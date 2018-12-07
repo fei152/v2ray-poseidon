@@ -3,11 +3,11 @@ package v2ray_ssrpanel_plugin
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+	flag "github.com/spf13/pflag"
 	"v2ray.com/core/common/errors"
 	"v2ray.com/core/common/platform"
 	"v2ray.com/core/common/protocol"
@@ -18,12 +18,8 @@ import (
 
 var (
 	commandLine = flag.NewFlagSet(os.Args[0]+"-plugin-ssrpanel", flag.ContinueOnError)
-
 	configFile = commandLine.String("config", "", "Config file for V2Ray.")
-	_          = commandLine.Bool("version", false, "Show current version of V2Ray.")
 	test       = commandLine.Bool("test", false, "Test config file only, without launching V2Ray server.")
-	_          = commandLine.String("format", "json", "Format of input file.")
-	_          = commandLine.Bool("plugin", false, "True to load plugins.")
 )
 
 type UserConfig struct {
@@ -53,34 +49,22 @@ func (c *UserConfig) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type myPluginConfig struct {
+type Config struct {
 	NodeID      uint         `json:"nodeId"`
 	CheckRate   int          `json:"checkRate"`
 	TrafficRate float64      `json:"trafficRate"`
 	MySQL       *MySQLConfig `json:"mysql"`
 	UserConfig  *UserConfig  `json:"user"`
 	GRPCAddr    string       `json:"gRPCAddr"`
-}
-
-type Config struct {
-	*conf.Config
-	Other struct {
-		Plugins map[string]json.RawMessage `json:"plugins"`
-	} `json:"other"`
-	myPluginConfig *myPluginConfig
-}
-
-func testConfig() error {
-	cfg, err := getConfig()
-	if err != nil {
-		return err
-	}
-	logConfig(cfg)
-
-	return nil
+	v2rayConfig   *conf.Config
 }
 
 func getConfig() (*Config, error) {
+	type config struct {
+		*conf.Config
+		SSRPanel *Config `json:"ssrpanel"`
+	}
+
 	configFile := getConfigFilePath()
 	configInput, err := confloader.LoadConfig(configFile)
 	if err != nil {
@@ -88,29 +72,15 @@ func getConfig() (*Config, error) {
 	}
 	defer configInput.Close()
 
-	cfg := &Config{}
+	cfg := &config{}
 	if err = decodeCommentJSON(configInput, cfg); err != nil {
 		return nil, err
 	}
-
-	myCfg := &myPluginConfig{}
-	if err = json.Unmarshal(cfg.Other.Plugins["ssrpanel"], myCfg); err != nil {
-		return nil, err
-	}
-	cfg.myPluginConfig = myCfg
-
-	if err = checkConfig(cfg); err != nil {
-		return nil, err
+	if cfg.SSRPanel != nil {
+		cfg.SSRPanel.v2rayConfig = cfg.Config
 	}
 
-	return cfg, err
-}
-
-func checkConfig(cfg *Config) error {
-	if cfg.myPluginConfig == nil {
-		return errors.New("please add SSR Panel config")
-	}
-	return nil
+	return cfg.SSRPanel, err
 }
 
 func getConfigFilePath() string {
@@ -144,9 +114,4 @@ func decodeCommentJSON(reader io.Reader, i interface{}) error {
 func fileExists(file string) bool {
 	info, err := os.Stat(file)
 	return err == nil && !info.IsDir()
-}
-
-func logConfig(cfg *Config) {
-	configContent, _ := json.MarshalIndent(cfg, "", "  ")
-	newError("got config: ", string(configContent)).AtInfo().WriteToLog()
 }

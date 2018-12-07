@@ -8,31 +8,33 @@ import (
 	"v2ray.com/core/common/errors"
 )
 
-func Run() {
-	err := run()
-	if err != nil {
-		fatal(err)
-	}
+func init() {
+	go func() {
+		err := run()
+		if err != nil {
+			fatal(err)
+		}
+	}()
 }
 
 func run() error {
 	commandLine.Parse(os.Args[1:])
-	if *test {
-		return testConfig()
-	}
 
-	globalCfg, err := getConfig()
-	if err != nil {
+	cfg, err := getConfig()
+	if err != nil || *test || cfg == nil {
 		return err
 	}
 
-	db, err := NewMySQLConn(globalCfg.myPluginConfig.MySQL)
+	// wait v2ray
+	time.Sleep(time.Second)
+
+	db, err := NewMySQLConn(cfg.MySQL)
 	if err != nil {
 		return err
 	}
 
 	go func() {
-		gRPCAddr := globalCfg.myPluginConfig.GRPCAddr
+		gRPCAddr := cfg.GRPCAddr
 		gRPCConn, err := connectGRPC(gRPCAddr, 10*time.Second)
 		if err != nil {
 			if s, ok := status.FromError(err); ok {
@@ -42,7 +44,7 @@ func run() error {
 		}
 		newError(fmt.Sprintf("Connected gRPC server \"%s\" ", gRPCAddr)).AtWarning().WriteToLog()
 
-		p := NewPanel(gRPCConn, db, globalCfg)
+		p := NewPanel(gRPCConn, db, cfg)
 		p.Start()
 	}()
 

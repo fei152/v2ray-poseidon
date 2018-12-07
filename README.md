@@ -61,39 +61,33 @@ Only one thing user should do is that setting up the database connection, withou
   },
 
 
-  "other": {
-    "plugins": {
-
-      "ssrpanel": {
-        // Node id on your SSR Panel
-        "nodeId": 1,
-        // every N seconds
-        "checkRate": 60,
-        // traffic rate
-        "trafficRate": 1.0,
-        // gRPC address
-        "gRPCAddr": "127.0.0.1:10085",
-        // user config
-        "user": {
-          // inbound tag, which inbound you would like add user to
-          "inboundTag": "proxy",
-          "level": 0,
-          "alterId": 16,
-          "security": "none"
-        },
-        // db connection
-        "mysql": {
-          "host": "127.0.0.1",
-          "port": 3306,
-          "user": "root",
-          "password": "ssrpanel",
-          "dbname": "ssrpanel"
-        }
-      }
-
-
+  "ssrpanel": {
+    // Node id on your SSR Panel
+    "nodeId": 1,
+    // every N seconds
+    "checkRate": 60,
+    // traffic rate
+    "trafficRate": 1.0,
+    // gRPC address
+    "gRPCAddr": "127.0.0.1:10085",
+    // user config
+    "user": {
+      // inbound tag, which inbound you would like add user to
+      "inboundTag": "proxy",
+      "level": 0,
+      "alterId": 16,
+      "security": "none"
+    },
+    // db connection
+    "mysql": {
+      "host": "127.0.0.1",
+      "port": 3306,
+      "user": "root",
+      "password": "ssrpanel",
+      "dbname": "ssrpanel"
     }
   }
+
 
 
 }
