@@ -20,16 +20,25 @@ type Panel struct {
 	db                   *DB
 	userModels           []UserModel
 	startAt              time.Time
+	node *Node
 }
 
-func NewPanel(gRPCConn *grpc.ClientConn, db *DB, cfg *Config) *Panel {
+func NewPanel(gRPCConn *grpc.ClientConn, db *DB, cfg *Config) (*Panel, error) {
+	node, err := db.GetNode(cfg.NodeID)
+	if err != nil {
+		return nil, err
+	}
+
+	newError(fmt.Sprintf("node traffic rate %.2f", node.TrafficRate)).AtDebug().WriteToLog()
+
 	return &Panel{
 		Config:               cfg,
 		db:                   db,
 		handlerServiceClient: NewHandlerServiceClient(gRPCConn, cfg.UserConfig.InboundTag),
 		statsServiceClient:   NewStatsServiceClient(gRPCConn),
 		startAt:              time.Now(),
-	}
+		node: node,
+	}, nil
 }
 
 func (p *Panel) Start() {
@@ -120,7 +129,7 @@ func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 				Uplink:   uplink,
 				Downlink: downlink,
 				NodeID:   p.NodeID,
-				Rate:     p.TrafficRate,
+				Rate:     p.node.TrafficRate,
 				Traffic:  bytefmt.ByteSize(uplink + downlink),
 			})
 		}
