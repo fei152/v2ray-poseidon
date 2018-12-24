@@ -17,6 +17,12 @@ you may want to see docs, all the things as same as the official docs except ins
 curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-ssrpanel-plugin/master/install-release.sh | sudo bash
 ```
 
+#### Uninstall
+
+```
+curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-ssrpanel-plugin/master/uninstall.sh | sudo bash
+```
+
 ### V2ray Configuration demo
 
 ```json
