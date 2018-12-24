@@ -7,6 +7,16 @@ Only one thing user should do is that setting up the database connection, withou
 - Sync user from SSRPanel database to v2ray
 - Log user traffic
 
+### Install on Linux
+
+you may want to see docs, all the things as same as the official docs except install command.
+
+[V2ray installation](https://www.v2ray.com/en/welcome/install.html)
+
+```
+curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-ssrpanel-plugin/master/install-release.sh | sudo bash
+```
+
 ### V2ray Configuration demo
 
 ```json
