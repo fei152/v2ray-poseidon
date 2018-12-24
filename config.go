@@ -3,12 +3,12 @@ package v2ray_ssrpanel_plugin
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
-	flag "github.com/spf13/pflag"
 	"v2ray.com/core/common/errors"
 	"v2ray.com/core/common/platform"
 	"v2ray.com/core/common/protocol"
@@ -19,8 +19,12 @@ import (
 
 var (
 	commandLine = flag.NewFlagSet(os.Args[0]+"-plugin-ssrpanel", flag.ContinueOnError)
+
 	configFile = commandLine.String("config", "", "Config file for V2Ray.")
+	_          = commandLine.Bool("version", false, "Show current version of V2Ray.")
 	test       = commandLine.Bool("test", false, "Test config file only, without launching V2Ray server.")
+	_          = commandLine.String("format", "json", "Format of input file.")
+	_          = commandLine.Bool("plugin", false, "True to load plugins.")
 )
 
 type UserConfig struct {
