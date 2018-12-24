@@ -1,4 +1,4 @@
-# a V2ray plugin for SSRPanel
+# A buildin V2ray plugin for SSRPanel
 
 Only one thing user should do is that setting up the database connection, without doing that user needn't do anything!
 
@@ -6,6 +6,15 @@ Only one thing user should do is that setting up the database connection, withou
 
 - Sync user from SSRPanel database to v2ray
 - Log user traffic
+
+### Benefits
+
+- No other requirements
+  - It's  able to run if you could launch v2ray core
+- Less memory usage
+  - It just takes about 5MB to 10MB memories more than v2ray core
+  - Small RAM VPS would be joyful
+- Simplicity configuration
 
 ### Install on Linux
 
@@ -103,6 +112,13 @@ curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-ssrpanel-plu
 
 }
 ```
+
+### Contributing
+
+- Test and [report bugs](https://github.com/ColetteContreras/v2ray-ssrpanel-plugin/issues)
+- Share your needs/experiences in [github issues](https://github.com/ColetteContreras/v2ray-ssrpanel-plugin/issues)
+- Enhance documentation
+- Contribute code by sending PR
 
 ### References
 
