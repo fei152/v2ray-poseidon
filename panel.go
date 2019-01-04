@@ -20,7 +20,7 @@ type Panel struct {
 	db                   *DB
 	userModels           []UserModel
 	startAt              time.Time
-	node *Node
+	node                 *Node
 }
 
 func NewPanel(gRPCConn *grpc.ClientConn, db *DB, cfg *Config) (*Panel, error) {
@@ -37,7 +37,7 @@ func NewPanel(gRPCConn *grpc.ClientConn, db *DB, cfg *Config) (*Panel, error) {
 		handlerServiceClient: NewHandlerServiceClient(gRPCConn, cfg.UserConfig.InboundTag),
 		statsServiceClient:   NewStatsServiceClient(gRPCConn),
 		startAt:              time.Now(),
-		node: node,
+		node:                 node,
 	}, nil
 }
 

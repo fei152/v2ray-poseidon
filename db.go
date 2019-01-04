@@ -65,7 +65,7 @@ func (l *NodeInfo) BeforeCreate(scope *gorm.Scope) error {
 }
 
 type Node struct {
-	ID      uint `gorm:"primary_key"`
+	ID          uint `gorm:"primary_key"`
 	TrafficRate float64
 }
 

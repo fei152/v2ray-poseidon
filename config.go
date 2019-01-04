@@ -59,7 +59,7 @@ type Config struct {
 	CheckRate   int          `json:"checkRate"`
 	MySQL       *MySQLConfig `json:"mysql"`
 	UserConfig  *UserConfig  `json:"user"`
-	v2rayConfig   *conf.Config
+	v2rayConfig *conf.Config
 }
 
 func getConfig() (*Config, error) {
@@ -81,7 +81,7 @@ func getConfig() (*Config, error) {
 	}
 	if cfg.SSRPanel != nil {
 		cfg.SSRPanel.v2rayConfig = cfg.Config
-		if err = checkCfg(cfg.SSRPanel)	; err != nil {
+		if err = checkCfg(cfg.SSRPanel); err != nil {
 			return nil, err
 		}
 	}
@@ -114,7 +114,7 @@ func checkCfg(cfg *Config) error {
 
 	if apiInbound := getInboundConfigByTag(apiTag, cfg.v2rayConfig.InboundConfigs); apiInbound == nil {
 		return errors.New(fmt.Sprintf("Miss an inbound tagged %s", apiTag))
-	}else if apiInbound.Protocol!="dokodemo-door" {
+	} else if apiInbound.Protocol != "dokodemo-door" {
 		return errors.New(fmt.Sprintf("The protocol of inbound tagged %s must be \"dokodemo-door\"", apiTag))
 	} else {
 		if apiInbound.ListenOn == nil || apiInbound.PortRange == nil {
