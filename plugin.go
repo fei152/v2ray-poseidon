@@ -43,7 +43,7 @@ func run() error {
 			}
 			fatal(fmt.Sprintf("connect to gRPC server \"%s\" err: ", gRPCAddr), err)
 		}
-		newError(fmt.Sprintf("Connected gRPC server \"%s\" ", gRPCAddr)).AtWarning().WriteToLog()
+		newErrorf("Connected gRPC server \"%s\" ", gRPCAddr).AtWarning().WriteToLog()
 
 		p, err := NewPanel(gRPCConn, db, cfg)
 		if err != nil {
@@ -54,6 +54,10 @@ func run() error {
 	}()
 
 	return nil
+}
+
+func newErrorf(format string, a ...interface{}) *errors.Error {
+	return newError(fmt.Sprintf(format, a...))
 }
 
 func newError(values ...interface{}) *errors.Error {

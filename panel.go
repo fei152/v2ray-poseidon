@@ -29,7 +29,7 @@ func NewPanel(gRPCConn *grpc.ClientConn, db *DB, cfg *Config) (*Panel, error) {
 		return nil, err
 	}
 
-	newError(fmt.Sprintf("node traffic rate %.2f", node.TrafficRate)).AtDebug().WriteToLog()
+	newErrorf("node[%d] traffic rate %.2f", node.ID, node.TrafficRate).AtDebug().WriteToLog()
 
 	return &Panel{
 		Config:               cfg,
@@ -58,10 +58,9 @@ func (p *Panel) Start() {
 func (p *Panel) do() error {
 	var addedUserCount, deletedUserCount, onlineUsers int
 	var uplinkTraffic, downlinkTraffic uint64
-	newError("start jobs").AtDebug().WriteToLog()
 	defer func() {
-		newError(fmt.Sprintf("+ %d users, - %d users, ↓ %s, ↑ %s, online %d",
-			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic), onlineUsers)).AtWarning().WriteToLog()
+		newErrorf("+ %d users, - %d users, ↓ %s, ↑ %s, online %d",
+			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic), onlineUsers).AtDebug().WriteToLog()
 	}()
 
 	p.db.DB.Create(&NodeInfo{
@@ -172,6 +171,7 @@ func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
 				return
 			}
 			deletedUserCount++
+			newErrorf("Deleted user: id=%d, VmessID=%s, Email=%s", userModel.ID, userModel.VmessID, userModel.Email).AtDebug().WriteToLog()
 		}
 	}
 
@@ -182,6 +182,7 @@ func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
 		}
 		p.userModels = append(p.userModels, userModel)
 		addedUserCount++
+		newErrorf("Added user: id=%d, VmessID=%s, Email=%s", userModel.ID, userModel.VmessID, userModel.Email).AtDebug().WriteToLog()
 	}
 
 	return
