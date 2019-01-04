@@ -85,8 +85,8 @@ func (p *Panel) do() error {
 		downlinkTraffic += log.Downlink
 
 		userIDs = append(userIDs, log.UserID)
-		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, log.Uplink)
-		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, log.Downlink)
+		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, uint64(float64(log.Uplink)*p.node.TrafficRate))
+		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, uint64(float64(log.Downlink)*p.node.TrafficRate))
 	}
 
 	if onlineUsers > 0 {
