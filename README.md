@@ -115,6 +115,8 @@ curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-ssrpanel-plu
 
 ### Contributing
 
+Read [WiKi](https://github.com/ColetteContreras/v2ray-ssrpanel-plugin/wiki) carefully before submitting issues.
+
 - Test and [report bugs](https://github.com/ColetteContreras/v2ray-ssrpanel-plugin/issues)
 - Share your needs/experiences in [github issues](https://github.com/ColetteContreras/v2ray-ssrpanel-plugin/issues)
 - Enhance documentation
