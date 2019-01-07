@@ -84,8 +84,8 @@ func (p *Panel) do() error {
 		downlinkTraffic += log.Downlink
 
 		userIDs = append(userIDs, log.UserID)
-		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, uint64(float64(log.Uplink)*p.node.TrafficRate))
-		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, uint64(float64(log.Downlink)*p.node.TrafficRate))
+		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, log.Uplink)
+		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, log.Downlink)
 	}
 
 	if onlineUsers > 0 {
@@ -123,6 +123,9 @@ func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 		}
 
 		if uplink+downlink > 0 {
+			uplink = uint64(p.getTrafficAmountByTrafficRate(float64(uplink)))
+			downlink = uint64(p.getTrafficAmountByTrafficRate(float64(downlink)))
+
 			userTrafficLogs = append(userTrafficLogs, UserTrafficLog{
 				UserID:   user.ID,
 				Uplink:   uplink,
@@ -135,6 +138,10 @@ func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 	}
 
 	return
+}
+
+func (p *Panel) getTrafficAmountByTrafficRate(traffic float64) float64 {
+	return p.node.TrafficRate * traffic
 }
 
 func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
