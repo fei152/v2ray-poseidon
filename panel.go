@@ -57,10 +57,10 @@ func (p *Panel) Start() {
 
 func (p *Panel) do() error {
 	var addedUserCount, deletedUserCount, onlineUsers int
-	var uplinkTraffic, downlinkTraffic uint64
+	var uplinkTotal, downlinkTotal uint64
 	defer func() {
 		newErrorf("+ %d users, - %d users, ↓ %s, ↑ %s, online %d",
-			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTraffic), bytefmt.ByteSize(uplinkTraffic), onlineUsers).AtDebug().WriteToLog()
+			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTotal), bytefmt.ByteSize(uplinkTotal), onlineUsers).AtDebug().WriteToLog()
 	}()
 
 	p.db.DB.Create(&NodeInfo{
@@ -79,13 +79,18 @@ func (p *Panel) do() error {
 	var userIDs []uint
 
 	for _, log := range userTrafficLogs {
+		uplink := p.mulTrafficRate(log.Uplink)
+		downlink := p.mulTrafficRate(log.Downlink)
+
+		uplinkTotal += log.Uplink
+		downlinkTotal += log.Downlink
+
+		log.Traffic = bytefmt.ByteSize(uplink+downlink)
 		p.db.DB.Create(&log)
-		uplinkTraffic += log.Uplink
-		downlinkTraffic += log.Downlink
 
 		userIDs = append(userIDs, log.UserID)
-		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, log.Uplink)
-		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, log.Downlink)
+		uVals += fmt.Sprintf(" WHEN %d THEN u + %d", log.UserID, uplink)
+		dVals += fmt.Sprintf(" WHEN %d THEN d + %d", log.UserID, downlink)
 	}
 
 	if onlineUsers > 0 {
@@ -123,16 +128,12 @@ func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 		}
 
 		if uplink+downlink > 0 {
-			uplink = uint64(p.getTrafficAmountByTrafficRate(float64(uplink)))
-			downlink = uint64(p.getTrafficAmountByTrafficRate(float64(downlink)))
-
 			userTrafficLogs = append(userTrafficLogs, UserTrafficLog{
 				UserID:   user.ID,
 				Uplink:   uplink,
 				Downlink: downlink,
 				NodeID:   p.NodeID,
 				Rate:     p.node.TrafficRate,
-				Traffic:  bytefmt.ByteSize(uplink + downlink),
 			})
 		}
 	}
@@ -140,8 +141,8 @@ func (p *Panel) getTraffic() (userTrafficLogs []UserTrafficLog, err error) {
 	return
 }
 
-func (p *Panel) getTrafficAmountByTrafficRate(traffic float64) float64 {
-	return p.node.TrafficRate * traffic
+func (p *Panel) mulTrafficRate(traffic uint64) uint64 {
+	return uint64(p.node.TrafficRate * float64(traffic))
 }
 
 func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
