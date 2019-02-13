@@ -186,7 +186,11 @@ func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
 	// Add
 	for _, userModel := range addUserModels {
 		if err = p.handlerServiceClient.AddUser(p.convertUser(userModel)); err != nil {
-			return
+			if p.IgnoreEmptyVmessID {
+				newErrorf("add user err \"%s\" user: %#v", err, userModel).AtWarning().WriteToLog()
+				continue
+			}
+			fatal("add user err ", err, userModel)
 		}
 		p.userModels = append(p.userModels, userModel)
 		addedUserCount++
