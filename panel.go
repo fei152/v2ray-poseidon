@@ -97,6 +97,7 @@ func (p *Panel) do() error {
 				NodeID: log.NodeID,
 				UserID: log.UserID,
 				IPList: log.ipList,
+				Port:   log.UserPort,
 			})
 		}
 	}
@@ -124,7 +125,8 @@ func (p *Panel) do() error {
 
 type userStatsLogs struct {
 	UserTrafficLog
-	ipList string
+	ipList   string
+	UserPort int
 }
 
 func (p *Panel) getTraffic() (logs []userStatsLogs, err error) {
@@ -155,7 +157,8 @@ func (p *Panel) getTraffic() (logs []userStatsLogs, err error) {
 					NodeID:   p.NodeID,
 					Rate:     p.node.TrafficRate,
 				},
-				ipList: ips,
+				ipList:   ips,
+				UserPort: user.Port,
 			})
 		}
 	}

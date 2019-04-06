@@ -1,14 +1,16 @@
 package v2ray_ssrpanel_plugin
 
 import (
-	"github.com/jinzhu/gorm"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type UserModel struct {
 	ID      uint
 	VmessID string
 	Email   string `gorm:"column:username"`
+	Port    int
 }
 
 func (*UserModel) TableName() string {
@@ -51,7 +53,8 @@ type NodeIP struct {
 	ID        uint `gorm:"primary_key"`
 	NodeID    uint
 	UserID    uint
-	IPList   string `gorm:"column:ip"`
+	Port      int
+	IPList    string `gorm:"column:ip"`
 	CreatedAt int64
 }
 
