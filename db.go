@@ -1,4 +1,4 @@
-package v2ray_ssrpanel_plugin
+package ssrpanel
 
 import (
 	"time"
@@ -94,13 +94,14 @@ func (*Node) TableName() string {
 }
 
 type DB struct {
-	DB *gorm.DB
+	DB 			*gorm.DB
+	RetryTimes	int64
 }
 
 func (db *DB) GetAllUsers() ([]UserModel, error) {
 	users := make([]UserModel, 0)
-	db.DB.Select("id, vmess_id, username").Where("enable = 1 AND u + d < transfer_enable").Find(&users)
-	return users, nil
+	err := db.DB.Select("id, vmess_id, username").Where("enable = 1 AND u + d < transfer_enable").Find(&users).Error
+	return users, err
 }
 
 func (db *DB) GetNode(id uint) (*Node, error) {

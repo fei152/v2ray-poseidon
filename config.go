@@ -1,4 +1,4 @@
-package v2ray_ssrpanel_plugin
+package ssrpanel
 
 import (
 	"bytes"

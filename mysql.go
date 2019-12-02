@@ -1,4 +1,4 @@
-package v2ray_ssrpanel_plugin
+package ssrpanel
 
 import (
 	"fmt"
@@ -38,7 +38,6 @@ func (c *MySQLConfig) FormatDSN() (string, error) {
 
 func NewMySQLConn(config *MySQLConfig) (*DB, error) {
 	newError("Connecting database...").AtInfo().WriteToLog()
-	defer newError("Connected").AtInfo().WriteToLog()
 
 	dsn, err := config.FormatDSN()
 	if err != nil {
@@ -49,7 +48,9 @@ func NewMySQLConn(config *MySQLConfig) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	db.SingularTable(true)
+	defer newError("Connected").AtInfo().WriteToLog()
 
 	return &DB{DB: db}, nil
 }

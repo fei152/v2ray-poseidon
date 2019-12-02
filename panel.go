@@ -1,4 +1,4 @@
-package v2ray_ssrpanel_plugin
+package ssrpanel
 
 import (
 	"code.cloudfoundry.org/bytefmt"
@@ -58,16 +58,27 @@ func (p *Panel) Start() {
 func (p *Panel) do() error {
 	var addedUserCount, deletedUserCount, onlineUsers int
 	var uplinkTotal, downlinkTotal uint64
+
+	if err := p.db.DB.DB().Ping(); err != nil {
+		p.db.RetryTimes++
+		newErrorf("Lost db connection, retry times: %d",
+			p.db.RetryTimes).AtDebug().WriteToLog()
+		return nil
+	}
+	p.db.RetryTimes = 0
+
 	defer func() {
 		newErrorf("+ %d users, - %d users, ↓ %s, ↑ %s, online %d",
 			addedUserCount, deletedUserCount, bytefmt.ByteSize(downlinkTotal), bytefmt.ByteSize(uplinkTotal), onlineUsers).AtDebug().WriteToLog()
 	}()
 
-	p.db.DB.Create(&NodeInfo{
+	if err := p.db.DB.Create(&NodeInfo{
 		NodeID: p.NodeID,
 		Uptime: time.Now().Sub(p.startAt) / time.Second,
 		Load:   getSystemLoad(),
-	})
+	}).Error; err != nil {
+		return err
+	}
 
 	userTrafficLogs, err := p.getTraffic()
 	if err != nil {
@@ -173,6 +184,9 @@ func (p *Panel) mulTrafficRate(traffic uint64) uint64 {
 func (p *Panel) syncUser() (addedUserCount, deletedUserCount int, err error) {
 	userModels, err := p.db.GetAllUsers()
 	if err != nil {
+		return 0, 0, err
+	}
+	if len(userModels) == 0 {
 		return 0, 0, err
 	}
 
