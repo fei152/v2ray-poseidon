@@ -100,7 +100,7 @@ type DB struct {
 
 func (db *DB) GetAllUsers() ([]UserModel, error) {
 	users := make([]UserModel, 0)
-	err := db.DB.Select("id, vmess_id, username").Where("enable = 1 AND u + d < transfer_enable").Find(&users).Error
+	err := db.DB.Select("id, vmess_id, username, port").Where("enable = 1 AND u + d < transfer_enable").Find(&users).Error
 	return users, err
 }
 
