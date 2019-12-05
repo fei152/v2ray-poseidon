@@ -10,7 +10,9 @@
       "StatsService"
     ]
   },
-  "stats": {},
+  "stats": {
+    "trackIp": true
+  },
   "inbounds": [{
     "port": 10086,
     "protocol": "vmess",

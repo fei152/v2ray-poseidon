@@ -47,7 +47,9 @@ curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-ssrpanel-plu
       "StatsService"
     ]
   },
-  "stats": {},
+  "stats": {
+    "trackIp": true
+  },
   "inbounds": [{
     "port": 10086,
     "protocol": "vmess",
