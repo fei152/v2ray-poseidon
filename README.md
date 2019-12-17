@@ -16,6 +16,15 @@ The name have to be changed for these reasons:
   - Poseidon-V2ray node
 3. To config with ease, a bran-new [v2ray config generator](https://github.com/ColetteContreras/poseidon-v2ray-config-generator) is going to be introduced to Poseidon-master.
 
+## Versions
+
+### Tenet
+
+All features is going to be available for any version, the only one difference is user scale. **They'll be in effect for users which user id is not greater than 50 for `Community` version**. Contact us to get an `Enterprise` version which has no limit of user scale, if needed.
+
+- Community version, which will be released on [GitHub releases](https://github.com/ColetteContreras/v2ray-poseidon/releases)
+- Enterprise version, which you are able to get it via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
+
 ## Contact
 
 Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
@@ -23,10 +32,31 @@ Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 ## Updates
 
 - v1.0.0
+
+  Breaking Changes:
+
+  - config files structure has been changed, new structure is:
+
+  ```diff
+  {
+  -  "ssrpanel": {
+  +  "poseidon": {
+      ... ... 
+    }
+  }
+  ```
+  
   - Added IP limit
+    - It's a number that how many ip a user can use at the same moment
+    - You can set user's `protocol_param` field on the database
   - Added rate limit
-  - !!!**Warning**: These two features are available if user's id is less or equal 20
+    - You should set user's `speed_limit_per_user` and `speed_limit_per_conn` fields on the database
+  - Added closing user connections instantly after user has been deleted
+    - By default the user's connections will not be disconnected after being deleted, but that is not we wanted.
+  - !!!**Warning**: These two features are available if user's id is less or equal 50
   - To support all users, please contact with me via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
+
+=========================
 
 Only one thing user should do is that setting up the database connection, without doing that user needn't do anything!
 
