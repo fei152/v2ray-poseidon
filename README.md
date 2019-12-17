@@ -1,4 +1,32 @@
-# A buildin V2ray plugin for SSRPanel
+# Poseidon -- A buildin V2ray plugin
+
+## Why change the name of the repo
+
+The name have to be changed for these reasons:
+
+1. I've learnt that there are still many panels need to be adapt with V2ray
+  - SSPanel-v3
+  - WEBAPI SSRPanel（VNetPanel）
+2. I'd like to provide a new deployment way
+  - Poseidon-Master node
+    - Automatic install Poseidon-V2ray node on new nodes which you added to the server list in your panel
+    - Automatic config Poseidon-V2ray node
+    - Real-time script output of deployment can be seen in Web browsers
+    - Any time and any where you can execute shell commands in your poseidon-v2ray node
+  - Poseidon-V2ray node
+3. To config with ease, a bran-new [v2ray config generator](https://github.com/ColetteContreras/poseidon-v2ray-config-generator) is going to be introduced to Poseidon-master.
+
+## Contact
+
+Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
+
+## Updates
+
+- v1.0.0
+  - Added IP limit
+  - Added rate limit
+  - !!!**Warning**: These two features are available if user's id is less or equal 20
+  - To support all users, please contact with me via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 
 Only one thing user should do is that setting up the database connection, without doing that user needn't do anything!
 
