@@ -16,14 +16,12 @@ The name have to be changed for these reasons:
   - Poseidon-V2ray node
 3. To config with ease, a bran-new [v2ray config generator](https://github.com/ColetteContreras/poseidon-v2ray-config-generator) is going to be introduced to Poseidon-master.
 
-## Versions
+### What's the difference between `Community` version and `Enterprise` version?
 
-### Tenet
+Community version can only be used for a small user scale, which user count is less than 50.
 
-All features is going to be available for any version, the only one difference is user scale. **They'll be in effect for users which user id is not greater than 50 for `Community` version**. Contact us to get an `Enterprise` version which has no limit of user scale, if needed.
+Enterprise version has no limit. [How to get Enterprise version? and how much is it?](https://github.com/ColetteContreras/v2ray-poseidon/wiki/How-to-get-Enterprise-version%3F-and-how-much-is-it%3F)
 
-- Community version, which will be released on [GitHub releases](https://github.com/ColetteContreras/v2ray-poseidon/releases)
-- Enterprise version, which you are able to get it via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 
 ## Contact
 
@@ -53,8 +51,6 @@ Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
     - You should set user's `speed_limit_per_user` and `speed_limit_per_conn` fields on the database
   - Added closing user connections instantly after user has been deleted
     - By default the user's connections will not be disconnected after being deleted, but that is not we wanted.
-  - !!!**Warning**: These two features are available if user's id is less or equal 50
-  - To support all users, please contact with me via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 
 =========================
 
