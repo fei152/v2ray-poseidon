@@ -141,7 +141,7 @@ curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/mas
     }
   },
 
-  "ssrpanel": {
+  "poseidon": {
     // Node id on your SSR Panel
     "nodeId": 1,
     // every N seconds
