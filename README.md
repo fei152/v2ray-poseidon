@@ -1,21 +1,5 @@
 # Poseidon -- A buildin V2ray plugin
 
-## Why change the name of the repo
-
-The name have to be changed for these reasons:
-
-1. I've learnt that there are still many panels need to be adapt with V2ray
-  - SSPanel-v3
-  - WEBAPI SSRPanel（VNetPanel）
-2. I'd like to provide a new deployment way
-  - Poseidon-Master node
-    - Automatic install Poseidon-V2ray node on new nodes which you added to the server list in your panel
-    - Automatic config Poseidon-V2ray node
-    - Real-time script output of deployment can be seen in Web browsers
-    - Any time and any where you can execute shell commands in your poseidon-v2ray node
-  - Poseidon-V2ray node
-3. To config with ease, a bran-new [v2ray config generator](https://github.com/ColetteContreras/poseidon-v2ray-config-generator) is going to be introduced to Poseidon-master.
-
 ### What's the difference between `Community` version and `Enterprise` version?
 
 Community version can only be used for a small user scale, which user count is less than 50.
