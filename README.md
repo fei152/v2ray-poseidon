@@ -1,10 +1,10 @@
 # Poseidon -- A buildin V2ray plugin
 
-## Contact
+### Contact
 
 Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 
-===========================================
+##
 
 Only one thing user should do is that setting up the database connection, without doing that user needn't do anything!
 
