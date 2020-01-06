@@ -270,7 +270,6 @@ installV2Ray(){
         return 1
     fi
     makeExecutable v2ray
-    copyFile v2ctl && makeExecutable v2ctl
     copyFile geoip.dat
     copyFile geosite.dat
 
