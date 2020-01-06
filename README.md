@@ -4,6 +4,14 @@
 
 Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 
+### Donation 
+
+If you guys have enjoyed with me, you are able to donate USDT via [MugglePay 麻瓜宝TG支付钱包](https://wallet.mugglepay.com/?refer=8J9V8DCJ "麻瓜宝用户钱包") 
+
+For example, if you have Binance (or any other exchange like Huobi), you can withdraw 5 USDT to MugglePay, and send me the money by sending the message below to [@MugglePayBot](http://t.me/MugglePayBot):
+
+`/pay @ColetteContreras 5 USDT`
+
 ##
 
 Only one thing user should do is that setting up the database connection, without doing that user needn't do anything!
