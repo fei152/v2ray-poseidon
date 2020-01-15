@@ -22,12 +22,14 @@ Support SSRPanel(VNetPanel), V2board and SSPanel ( in the future )
 
 ### Install on Linux
 
-you may want to see docs, all the things as same as the official docs except install command.
-
-[V2ray installation](https://www.v2ray.com/en/welcome/install.html)
-
 ```
 curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/master/install-release.sh | sudo bash
+```
+
+#### Uninstall
+
+```
+curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/master/uninstall.sh | sudo bash
 ```
 
 ### Donation 
@@ -47,10 +49,3 @@ Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 - [V2ray](https://github.com/v2ray/v2ray-core)
 - [SSRPanel](https://github.com/ssrpanel/SSRPanel)
 - [V2board](https://github.com/v2board/v2board)
-
-
-#### Uninstall
-
-```
-curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/master/uninstall.sh | sudo bash
-```
