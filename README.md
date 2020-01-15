@@ -6,8 +6,8 @@ Support SSRPanel(VNetPanel), V2board and SSPanel ( in the future )
 
 - Sync user from your panel to v2ray
 - Log user traffic
-- Speed limit
-- online IP count limit
+- Limit traffic rate ( speed limit )
+- Limit online IP count
 - And other optimizations
 
 ### Benefits
@@ -30,12 +30,6 @@ you may want to see docs, all the things as same as the official docs except ins
 curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/master/install-release.sh | sudo bash
 ```
 
-#### Uninstall
-
-```
-curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/master/uninstall.sh | sudo bash
-```
-
 ### Donation 
 
 If you guys have enjoyed with me, you are able to donate USDT via [MugglePay 麻瓜宝TG支付钱包](https://telegram.me/MugglePayBot?start=8J9V8DCJ "麻瓜宝用户钱包") 
@@ -53,3 +47,10 @@ Get in touch via [TG group: v2ray_poseidon](https://t.me/v2ray_poseidon)
 - [V2ray](https://github.com/v2ray/v2ray-core)
 - [SSRPanel](https://github.com/ssrpanel/SSRPanel)
 - [V2board](https://github.com/v2board/v2board)
+
+
+#### Uninstall
+
+```
+curl -L -s https://raw.githubusercontent.com/ColetteContreras/v2ray-poseidon/master/uninstall.sh | sudo bash
+```
