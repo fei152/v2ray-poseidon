@@ -140,7 +140,8 @@ Read [WiKi](https://github.com/ColetteContreras/v2ray-ssrpanel-plugin/wiki) care
 - Enhance documentation
 - Contribute code by sending PR
 
-### References
+### Acknowledgement
 
 - [V2ray](https://github.com/v2ray/v2ray-core)
 - [SSRPanel](https://github.com/ssrpanel/SSRPanel)
+- [V2board](https://github.com/v2board/v2board)
