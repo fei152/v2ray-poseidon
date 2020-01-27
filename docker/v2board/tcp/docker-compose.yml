@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  v2ray-tcp:
+    image: v2cc/poseidon
+    container_name: v2ray-tcp
+    ports:
+      - "服务端口:服务端口"
+    volumes:
+      - ./config.json:/etc/v2ray/config.json

@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  v2ray-ws-tls:
+    image: v2cc/poseidon
+    container_name: v2ray-ws-tls
+    ports:
+      # 使用 Caddy 生成 TLS 证书，所以后面的是 443
+      - "服务端口:443"
+    volumes:
+      - ./config.json:/etc/v2ray/config.json
+    environment:
+      - USE_CADDY_TLS=true
+
+      # 使用 cloudflare DNS 验证
+      - CF_API_EMAIL=
+      - CF_API_KEY=
+      # 使用 namesilo DNS 验证
+      - NAMESILO_API_KEY=
+      # 使用 namecheap DNS 验证
+      - NAMECHEAP_API_USER=
+      - NAMECHEAP_API_KEY=
+    # 使用哪个把哪个前面的井号去掉，其它的全部注释
+    #command: tls cloudflare your.domain
+    #command: tls namesilo your.domain
+    #command: tls namecheap your.domain
