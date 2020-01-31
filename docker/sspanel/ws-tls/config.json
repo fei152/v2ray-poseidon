@@ -34,7 +34,7 @@
       "streamSettings": {
         "network": "ws",
         "wsSettings": {
-          "path": "/phpmyadmin"
+          "path": "/"
         }
       },
       "tag": "proxy"
