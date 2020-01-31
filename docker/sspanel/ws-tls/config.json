@@ -1,21 +1,18 @@
 {
   "poseidon": {
-    "panel": "ssrpanel",
+    "panel": "sspanel-webapi",
     "license_key": "",  // 无效，或空的 license key 都会被当成社区版
     "nodeId": 1,		// 面板里添加完节点后生成的自增ID
+    // every N seconds
     "checkRate": 60,
+    "panelUrl": "http or https://your.domain", // SSPanel 面板地址
+    "panelKey": "your_panel_key",                     // 面板的 Key
     "user": {
+      // inbound tag, which inbound you would like add user to
       "inboundTag": "proxy",
       "level": 0,
-      "alterId": 16,		// 必须跟面板里设定的alterId一致
+      "alterId": 16,
       "security": "none"
-    },
-    "mysql": {
-      "host": "your.host.domain",	// 数据库所在的地址
-      "port": 3306,
-      "user": "ssrpanel", 	        // 数据库连接账号
-      "password": "password", 	    // 数据库连接密码
-      "dbname": "ssrpanel"	        // 数据库名称
     }
   },
   "log": {
