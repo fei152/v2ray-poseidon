@@ -4,6 +4,7 @@ services:
   v2ray:
     image: v2cc/poseidon
     container_name: v2ray-tcp
+    restart: always
     ports:
       - "10086:10086"
     volumes:

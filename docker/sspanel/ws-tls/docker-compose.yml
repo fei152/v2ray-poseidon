@@ -4,6 +4,7 @@ services:
   v2ray-ws-tls:
     image: v2cc/poseidon
     container_name: v2ray-ws-tls
+    restart: always
     ports:
       - "443:443"
     volumes:

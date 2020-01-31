@@ -4,6 +4,7 @@ services:
   v2ray-ws-tls:
     image: v2cc/poseidon
     container_name: v2ray-ws-tls
+    restart: always
     ports:
       # 使用 Caddy 生成 TLS 证书，所以后面的是 443
       - "服务端口:443"
