@@ -6,7 +6,7 @@
     // every N seconds
     "checkRate": 60,
     "panelUrl": "http or https://your.domain", // SSPanel 面板地址
-    "panelKey": "your_panel_key",                     // 面板的 Key
+    "panelKey": "your_panel_key",              // SSPanel 面板的配置文件中的 muKey 的值
     "user": {
       // inbound tag, which inbound you would like add user to
       "inboundTag": "proxy",
