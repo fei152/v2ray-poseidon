@@ -10,6 +10,8 @@ services:
     volumes:
       - ./config.json:/etc/v2ray/config.json
     environment:
+      - USE_CADDY_TLS=true
+
       # 使用 cloudflare DNS 验证
       - CF_API_EMAIL=
       - CF_API_KEY=
