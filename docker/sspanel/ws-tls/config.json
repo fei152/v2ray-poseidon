@@ -11,7 +11,7 @@
       // inbound tag, which inbound you would like add user to
       "inboundTag": "proxy",
       "level": 0,
-      "alterId": 16,
+      "alterId": 2,
       "security": "none"
     }
   },

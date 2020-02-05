@@ -7,7 +7,7 @@
     "user": {
       "inboundTag": "proxy",
       "level": 0,
-      "alterId": 16,		// 必须跟面板里设定的alterId一致
+      "alterId": 2,		// 必须跟面板里设定的alterId一致
       "security": "none"
     },
     "mysql": {
