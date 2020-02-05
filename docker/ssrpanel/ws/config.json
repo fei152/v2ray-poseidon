@@ -1,0 +1,84 @@
+{
+  "poseidon": {
+    "panel": "ssrpanel",
+    "license_key": "",  // 无效，或空的 license key 都会被当成社区版
+    "nodeId": 1,		// 面板里添加完节点后生成的自增ID
+    "checkRate": 60,
+    "user": {
+      "inboundTag": "proxy",
+      "level": 0,
+      "alterId": 2,		// 必须跟面板里设定的alterId一致
+      "security": "none"
+    },
+    "mysql": {
+      "host": "your.host.domain",	// 数据库所在的地址
+      "port": 3306,
+      "user": "ssrpanel", 	        // 数据库连接账号
+      "password": "password", 	    // 数据库连接密码
+      "dbname": "ssrpanel"	        // 数据库名称
+    }
+  },
+  "log": {
+    "loglevel": "debug"
+  },
+  "api": {
+    "tag": "api",
+    "services": [
+      "HandlerService",
+      "LoggerService",
+      "StatsService"
+    ]
+  },
+  "stats": {},
+  "inbounds": [
+    {
+      "port": 10086,
+      "protocol": "vmess",
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/"
+        }
+      },
+      "tag": "proxy"
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 10085,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1"
+      },
+      "tag": "api"
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom"
+    }
+  ],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": [
+          "api"
+        ],
+        "outboundTag": "api"
+      }
+    ],
+    "strategy": "rules"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true
+    }
+  }
+}
