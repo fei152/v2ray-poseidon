@@ -1,0 +1,12 @@
+{
+  "poseidon": {
+    "panel": "v2board",         // 这一行必须存在，且不能更改
+    "nodeId": 1,                // 你的节点 ID 和 v2board 里的一致
+    // 无效，或空的 license key 都会被当成社区版
+    "license_key": "",          // 在 v2board 面板中配置就行了，如果需要和 v2board 面板中的不一样，则需要在这里单独配置
+    "checkRate": 60,            // 每隔多长时间同步一次配置文件、用户、上报服务器信息
+    "webapi": "http or https://YOUR V2BOARD DOMAIN",// v2board 的域名信息
+    "token": "v2board token",   // v2board 和 v2ray-poseidon 的通信密钥
+    "localPort": 10084 // 本地 api, dokodemo-door,　监听在哪个端口，不能和服务端口相同
+  }
+}

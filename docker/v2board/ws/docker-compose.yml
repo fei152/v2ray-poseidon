@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  v2ray-ws:
+    image: v2cc/poseidon
+    container_name: v2ray-ws
+    restart: always
+    ports:
+      - "80:10086"
+    volumes:
+      - ./config.json:/etc/v2ray/config.json
+    environment:
+      # 强制 HTTP，因为我们想让 CDN 来做 TLS 的工作，所以这一层直接用 HTTP 就行
+      - FORCE_HTTP=true
