@@ -7,6 +7,13 @@
     "checkRate": 60,            // 每隔多长时间同步一次配置文件、用户、上报服务器信息
     "webapi": "http or https://YOUR V2BOARD DOMAIN",// v2board 的域名信息
     "token": "v2board token",   // v2board 和 v2ray-poseidon 的通信密钥
+
+    "speedLimit": 0, // 节点限速 单位 字节/s 0 表示不限速
+    "user": {
+      "maxOnlineIPCount": 0,  // 用户同时在线 IP 数限制 0 表示不限制
+      "speedLimit": 0         // 用户限速 单位 字节/s 0 表示不限速
+    },
+
     "localPort": 10084 // 本地 api, dokodemo-door,　监听在哪个端口，不能和服务端口相同
   }
 }
