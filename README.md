@@ -1,4 +1,4 @@
-# Poseidon -- A buildin V2ray plugin
+# Poseidon -- An Enhanced V2Ray(based on v2ray-core)
 
 Support SSRPanel(VNetPanel), V2board, SSpanel-v3-Uim
 
