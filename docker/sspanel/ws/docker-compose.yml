@@ -9,3 +9,7 @@ services:
       - "80:10086"
     volumes:
       - ./config.json:/etc/v2ray/config.json
+    logging:
+      driver: "local"
+      options:
+        max-size: 2g

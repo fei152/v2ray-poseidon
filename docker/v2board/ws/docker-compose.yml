@@ -9,6 +9,10 @@ services:
       - "80:10086"
     volumes:
       - ./config.json:/etc/v2ray/config.json
+    logging:
+      driver: "local"
+      options:
+        max-size: 2g
     environment:
       # 强制 HTTP，因为我们想让 CDN 来做 TLS 的工作，所以这一层直接用 HTTP 就行
       - FORCE_HTTP=true

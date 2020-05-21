@@ -9,3 +9,7 @@ services:
       - "服务端口:服务端口"
     volumes:
       - ./config.json:/etc/v2ray/config.json
+    logging:
+      driver: "local"
+      options:
+        max-size: 2g
