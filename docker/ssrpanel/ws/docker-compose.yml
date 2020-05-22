@@ -10,6 +10,6 @@ services:
     volumes:
       - ./config.json:/etc/v2ray/config.json
     logging:
-      driver: "local"
+      driver: "json-file"
       options:
         max-size: 2g
