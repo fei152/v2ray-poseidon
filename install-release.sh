@@ -295,12 +295,8 @@ installV2Ray(){
 
 installInitScript(){
     if [[ -n "${SYSTEMCTL_CMD}" ]];then
-        if [[ ! -f "/etc/systemd/system/v2ray.service" ]]; then
-            if [[ ! -f "/lib/systemd/system/v2ray.service" ]]; then
-                cp "${VSRC_ROOT}/systemd/v2ray.service" "/etc/systemd/system/"
-                systemctl enable v2ray.service
-            fi
-        fi
+        cp ${VSRC_ROOT}/systemd/* /etc/systemd/system/
+        systemctl enable v2ray.service
         return
     elif [[ -n "${SERVICE_CMD}" ]] && [[ ! -f "/etc/init.d/v2ray" ]]; then
         installSoftware "daemon" || return $?
