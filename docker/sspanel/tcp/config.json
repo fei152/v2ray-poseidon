@@ -13,7 +13,9 @@
       "level": 0,
       "alterId": 2,
       "security": "none"
-    }
+    },
+    // 是否通过 HAProxy 代理协议，获取用户的真实 IP
+    "acceptProxyProtocol": false
   },
   "log": {
     "loglevel": "debug"
