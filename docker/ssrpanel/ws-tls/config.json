@@ -25,7 +25,7 @@
   },
   "inbounds": [
     {
-      "port": 10086,
+      "port": 443,
       "protocol": "vmess",
       "streamSettings": {
         "network": "ws",

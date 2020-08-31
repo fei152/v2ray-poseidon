@@ -6,26 +6,33 @@ services:
     container_name: v2ray-ws-tls
     restart: always
     ports:
-      # 使用 Caddy 生成 TLS 证书，所以后面的是 443
-      - "服务端口:443"
+      - "443:443"
+      #- "80:80"
     volumes:
       - ./config.json:/etc/v2ray/config.json
+      #- v2ray.crt:/etc/v2ray/v2ray.crt
+      #- v2ray.key:/etc/v2ray/v2ray.key
+    environment:
+      # 手动指定证书文件，配置文件需要映射到容器里面
+      #- CERT_FILE=/etc/v2ray/v2ray.crt
+      #- KEY_FILE=/etc/v2ray/v2ray.key
+
+      # 让程序自动生成 TLS 证书，支持 http 和 dns 两种方式
+      # 若使用 http 方式获取证书，需要将 80 端口映射到主机并放行
+      - CERT_MODE=dns
+      # dns_cf 或 dns_namesilo 或 dns_namecheap
+      - DNS_PROVIDER=dns_cf
+      # 申请 DNS 证书的域名
+      - CERT_DOMAIN=demo.oppapanel.xyz
+      # 使用 cloudflare DNS 验证
+      - CF_Email=
+      - CF_Key=
+      # 使用 namesilo DNS 验证
+      - Namesilo_Key=
+      # 使用 namecheap DNS 验证
+      - NAMECHEAP_USERNAME=
+      - NAMECHEAP_API_KEY=
     logging:
       driver: "json-file"
       options:
         max-size: 2g
-    environment:
-      - USE_CADDY_TLS=true
-
-      # 使用 cloudflare DNS 验证
-      - CF_API_EMAIL=
-      - CF_API_KEY=
-      # 使用 namesilo DNS 验证
-      - NAMESILO_API_KEY=
-      # 使用 namecheap DNS 验证
-      - NAMECHEAP_API_USER=
-      - NAMECHEAP_API_KEY=
-    # 使用哪个把哪个前面的井号去掉，其它的全部注释
-    #command: tls cloudflare your.domain
-    #command: tls namesilo your.domain
-    #command: tls namecheap your.domain
