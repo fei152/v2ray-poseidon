@@ -1,0 +1,29 @@
+name: Docker Build And Push To Docker Hub
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build V2ray Xray Poseidon
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Git Checkout Code
+        uses: actions/checkout@v1
+        id: git_checkout
+
+      - name: Replace version
+        run: sed -i "26s|VERSION|$(echo $GITHUB_REF | cut -d / -f 3)|g" Dockerfile
+                    
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1
+        with:
+          push: true
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_REPO }}
+          tag_with_ref: true
+          tag_with_sha: true
+          tags: latest
